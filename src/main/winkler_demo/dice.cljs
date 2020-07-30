@@ -2,12 +2,14 @@
   (:require [winkler.core :refer [generate]]))
 
 (defn stateful-seq
-  "Takes a sequence s and returns an \"iterator\" function which takes the first (or n, if provided) value(s) from s. Subsequent calls will take from the current position of the cursor and will return an empty seq if s is exhausted.
+  "Takes a sequence `s` and returns an \"iterator\" function which takes the first (or n, if provided) value(s) from `s`. Subsequent calls will take from the current position of the cursor and will return an empty seq if `s` is exhausted.
 
-   Ex:
+   ```clojure
    (def iter! (stateful-seq (range)))
    (iter!) => (0)
-   (iter! 3) => (1 2 3)"
+   (iter! 3) => (1 2 3)
+   ```
+   "
   [s]
   (let [cursor (atom s)]
     (fn hello [n]
@@ -43,7 +45,7 @@
 (defrecord Uniform [sides times]
   Randomizer
   (roll [this]
-    (let [iter! (get uniform-iters sides)]
+    (let [iter! (get @uniform-iters sides)]
       (if iter!
         (iter! times)
         (let [iters (swap! uniform-iters
@@ -61,5 +63,5 @@
           (map #(inc (mod % sides))))))
 
 (comment
-  (roll (Uniform. 20 10))
+  (roll (->Pseudo 20 2))
   (get @uniform-iters 20))

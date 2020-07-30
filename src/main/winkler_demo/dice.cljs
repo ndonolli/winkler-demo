@@ -57,7 +57,7 @@
   (roll [this]
     (->> (js/Uint32Array. times) js/crypto.getRandomValues
           (js/Array.from)
-          (map + (take times (generate 10000)))
+          (map + (take times (generate)))
           (map #(inc (mod % sides))))))
 
 (comment

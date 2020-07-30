@@ -13,6 +13,3 @@
 (defn app []
   [:h1 "Hello world!"]
   [roller])
-
-(comment
-  (dice/roll (Pseudo. 20 2)))

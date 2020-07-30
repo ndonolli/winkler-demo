@@ -17,10 +17,14 @@
         ret))))
 
 ;; "Stateful" helpers for Uniform Randomizer type
-(def uniform-iters (atom {}))
-(defn uniform-random [n]
+(defn uniform-random
+  "Returns a lazy seq of an even distribution of range n, randomized."
+  [n]
   (lazy-cat (shuffle (range 1 (inc n))) (uniform-random n)))
 
+(def uniform-iters
+  "Runtime collection of stateful iterators used by Uniform Randomizer type."
+  (atom {}))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Randomizer types ;;

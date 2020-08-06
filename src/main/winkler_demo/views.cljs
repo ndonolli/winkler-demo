@@ -18,7 +18,7 @@
 (defn header []
   [:section.hero.is-dark
    [:div.hero-body
-    [:div.container
+    [:div.container.has-text-centered
      [:h1.title "Winkler's DnD Dice"]
      [:h2.subtitle "Making random rolls somehow more random"]]]])
 
@@ -39,9 +39,16 @@
           [:option {:value :uniform} "Uniform"]]]]]]]
     [:div.field.is-horizontal
      [:div.field-label.is-normal
-      [:label.label "Die type"]]
+      [:label.label "Dice"]]
      [:div.field-body
-      [:div.field
+      [:div.field.has-addons
+       [:div.control
+        [:div.select
+         [:select {:value (:times @state/opts)
+                   :on-change #(swap! state/opts assoc :times (-> % .-target .-value int))}
+          (for [i (range 1 9)]
+            ^{:key (str "times-" i)}
+            [:option {:value i} i])]]]
        [:div.control
         [:div.select
          [:select {:value (:sides @state/opts)
@@ -52,18 +59,6 @@
           [:option {:value 8} "d8"]
           [:option {:value 6} "d6"]
           [:option {:value 4} "d4"]]]]]]]
-    [:div.field.is-horizontal
-     [:div.field-label.is-normal
-      [:label.label "Rolls"]]
-     [:div.field-body
-      [:div.field
-       [:div.control
-        [:div.select
-         [:select {:value (:times @state/opts)
-                   :on-change #(swap! state/opts assoc :times (-> % .-target .-value int))}
-          (for [i (range 1 9)]
-            ^{:key (str "times-" i)}
-            [:option {:value i} i])]]]]]]
     [:div.field.is-horizontal
      [:div.field-label]
      [:div.field-body

@@ -58,7 +58,14 @@
           [:option {:value 10} "d10"]
           [:option {:value 8} "d8"]
           [:option {:value 6} "d6"]
-          [:option {:value 4} "d4"]]]]]]]
+          [:option {:value 4} "d4"]]]]
+       [:div.control
+        [:div.select
+         [:select {:value (:modifier @state/opts)
+                   :on-change #(swap! state/opts assoc :modifier (-> % .-target .-value int))}
+          (for [i (range 1 21)]
+            ^{:key (str "modifier-" i)}
+            [:option {:value i} (str "+ " i)])]]]]]]
     [:div.field.is-horizontal
      [:div.field-label]
      [:div.field-body

@@ -10,7 +10,9 @@
        (get randomizers randomizer)))
 
 (defn roll-display [rolls]
-  [:p "your rolls are: " (apply str (interpose ", " rolls))])
+  [:section.section
+   [:div.container
+    [:p "your rolls are: " (apply str (interpose ", " rolls))]]])
 
 
 (defn header []
@@ -20,7 +22,7 @@
      [:h1.title "Winkler's DnD Dice"]
      [:h2.subtitle "Making random rolls somehow more random"]]]])
 
-(defn roller []
+(defn roll-form []
   [:section.section
    [:div.container
     [:div.field.is-horizontal
@@ -69,13 +71,13 @@
        [:div.control
         [:button.button.is-link
          {:on-click #(reset! state/roll (dice/roll (init-randomizer @state/opts)))}
-         "Roll"]]]]]
-    [roll-display @state/roll]]])
+         "Roll"]]]]]]])
 
 (defn app []
   [:<>
    [header]
-   [roller]])
+   [roll-form]
+   [roll-display @state/roll]])
 
 (def a (atom {:randomizer :uniform}))
 (comment)

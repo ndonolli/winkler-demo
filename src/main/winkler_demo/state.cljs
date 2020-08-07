@@ -11,3 +11,5 @@
            :sides 20
            :modifier 0
            :times 1}))
+
+(def collapsed (r/atom false))

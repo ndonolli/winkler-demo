@@ -9,10 +9,19 @@
                      :uniform (Uniform. sides times)}]
        (get randomizers randomizer)))
 
-(defn roll-display [rolls]
-  [:section.section
-   [:div.container
-    [:p "your rolls are: " (apply str (interpose ", " rolls))]]])
+(defn roll-display [rolls modifier]
+  (if-let [rolls* (seq (interpose "+" rolls))]
+    [:section.section
+     [:div.container.dice-container
+      (for [roll rolls*]
+        ^{:key (str "roll-" (js/Math.random))}
+        [:div.ml-1.mr-1.mb-5 {:class (if (= roll "+")
+                                  "plus"
+                                  (str "die" " " (case roll 20 "nat-20" 1 "nat-1" "")))}
+         [:span.die-body.bg-number roll]])
+      (if-not (zero? (int modifier))
+        [:span.ml-1.mr-1.mb-5.bg-number (str "+ " modifier)])
+      [:span.ml-1.mr-1.mb-5.bg-number " = " [:strong (reduce + modifier rolls)]]]]))
 
 
 (defn header []
@@ -46,7 +55,7 @@
         [:div.select
          [:select {:value (:times @state/opts)
                    :on-change #(swap! state/opts assoc :times (-> % .-target .-value int))}
-          (for [i (range 1 9)]
+          (for [i (range 1 11)]
             ^{:key (str "times-" i)}
             [:option {:value i} i])]]]
        [:div.control
@@ -63,7 +72,7 @@
         [:div.select
          [:select {:value (:modifier @state/opts)
                    :on-change #(swap! state/opts assoc :modifier (-> % .-target .-value int))}
-          (for [i (range 1 21)]
+          (for [i (range 21)]
             ^{:key (str "modifier-" i)}
             [:option {:value i} (str "+ " i)])]]]]]]
     [:div.field.is-horizontal
@@ -79,7 +88,8 @@
   [:<>
    [header]
    [roll-form]
-   [roll-display @state/roll]])
+   [roll-display @state/roll (:modifier @state/opts)]])
 
 (def a (atom {:randomizer :uniform}))
-(comment)
+(comment
+  (interpose ", " [2 3]))

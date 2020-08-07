@@ -61,7 +61,3 @@
           (js/Array.from)
           (map + (take times (generate)))
           (map #(inc (mod % sides))))))
-
-(comment
-  (roll (->Pseudo 20 2))
-  (get @uniform-iters 20))

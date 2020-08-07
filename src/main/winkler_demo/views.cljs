@@ -114,9 +114,10 @@
      [:p.mb-5 "This is a simple dice roller for use with tabletop games. It is also a demonstration of different random number generators (RNGs) and various algorithmic techniques "
       "used to achieve as close to mathematical randomness as possible, using a computer. This is not a straightforward task, and is studied well in the field of cryptography - "
       "its application ever crucial in the fast-paced world of cybersecurity."]
-     [:p "This weird foray into cryptographically sound dice stemmed from real-world frustration with physical DnD dice. I created an open-sourced clojure(script) library called "
+     [:p.mb-5 "This weird foray into cryptographically sound dice stemmed from real-world frustration with physical DnD dice. I created an open-sourced clojure(script) library called "
       [:a {:href "https://github.com/ndonolli/winkler"} "Winkler"] " as a solution for client-side entropy generation, and wrote more thoughts about it here. "
-      "Sure, maybe a demonstration with dice is overkill, but would you trust your character's fate to anything less than the power of chaotic indifference that is a truly random dice roll?  I think not."]]]])
+      "Sure, maybe a demonstration with dice is overkill, but would you trust your character's fate to anything less than the power of chaotic indifference that is a truly random dice roll?  I think not."]
+     [:p.is-size-7 "View this page's source on "[:a {:href "https://github.com/ndonolli/winkler-demo"} "github"]". Made with <3 by " [:a {:href "https://imaginathan.space"} "Nathan"]]]]])
 
 (defn app []
   [:<>

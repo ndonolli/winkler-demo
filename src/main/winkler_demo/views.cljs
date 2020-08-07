@@ -94,13 +94,13 @@
         (case randomizer
           :winkler [:p.mb-3 "This RNG utilizes the cryptographically secure browser API methods found in the " [:code "window.crypto"] " object. "
                     "It additionally uses " [:a {:href "https://github.com/ndonolli/winkler"} "Winkler"] ", an open source library for generating "
-                    "client-side entropy by measure fluxuations in the machine's state.  It intends to produce a mathematically random "
-                    "sequence suitable enough for cyphers."]
+                    "client-side entropy by measuring fluctuations in the machine's state.  It intends to produce a mathematically random "
+                    "sequence suitable enough for encryption."]
           :uniform [:p.mb-3 "This produces a sequence that is intentionally not random, but seemingly so to most of us. For a die with " [:code "n"] " sides, "
                     "each number will appear once for every " [:code "n"] " rolls. This ensures that numbers rarely repeat and the distribution of values is always uniform. "
                     "While this generator is not random at all, it is designed to produce a sequence we interpret as highly random."]
           :pseudo [:p.mb-3 "This utilizes the standard " [:code "Math.random()"] " javascript method found in most browser engines.  The common implementation is a " [:code "Xorshift128+"]
-                   " RNG, which is very fast and produces an adequete random sequence. While this is great for games (and honestly, dice rolls) it is still deterministic and thus "
+                   " LSFR, which is very fast and produces an adequate random sequence. While this is great for games (and honestly, dice rolls) it is still deterministic and thus "
                    "only a pseudo-random generator - unfit for secure cryptography."])
         [:a.mt-2.is-size-7 {:on-click #(swap! state/collapsed not)} "I don't care"])
        [:a.mt-2 {:on-click #(swap! state/collapsed not)} "Tell me more!"])

@@ -3,11 +3,12 @@
 
  :dependencies [[reagent "1.0.0-alpha2"]
                 [binaryage/devtools "0.9.10"]
-                [imaginathansoft/winkler "0.2.0"]]
+                [imaginathansoft/winkler "0.3.1"]]
 
  :builds {:app {:target :browser
                 :output-dir "public/js"
                 :asset-path "/js"
                 :modules {:main {:entries [winkler-demo.core]}}
                 :devtools {:http-root "public"
+                           :repl-init-ns winkler-demo.core
                            :http-port 3000}}}}

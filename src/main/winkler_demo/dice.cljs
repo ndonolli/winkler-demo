@@ -31,33 +31,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Randomizer types ;;
 ;;;;;;;;;;;;;;;;;;;;;;
-(defprotocol Randomizer
-  "Die roll interface for random number sequence generators"
-  (roll [this]))
+(defmulti roll :randomizer)
 
-;; Standard RNG sequence implemented by most browsers.
-(defrecord Pseudo [sides times]
-  Randomizer
-  (roll [this]
-    (take times (repeatedly #(js/Math.ceil (* sides (js/Math.random)))))))
+(defmethod roll :winkler [{:keys [sides times]}]
+  (->> (js/Uint32Array. times) js/crypto.getRandomValues
+       (js/Array.from)
+       (map + (take times (generate)))
+       (map #(inc (mod % sides)))))
 
-;; Intentionally uniform distribution of probability for seemingly random effect.
-(defrecord Uniform [sides times]
-  Randomizer
-  (roll [this]
-    (let [iter! (get @uniform-iters sides)]
-      (if iter!
-        (iter! times)
-        (let [iters (swap! uniform-iters
-                           assoc sides (stateful-seq (uniform-random sides)))
-              new-iter! (get iters sides)]
-          (new-iter! times))))))
+(defmethod roll :pseudo [{:keys [sides times]}]
+  (take times (repeatedly #(js/Math.ceil (* sides (js/Math.random))))))
 
-;; Cryptographically secure random sequence based off crypto web API salted with Winkler.
-(defrecord WinklerCrypto [sides times]
-  Randomizer
-  (roll [this]
-    (->> (js/Uint32Array. times) js/crypto.getRandomValues
-          (js/Array.from)
-          (map + (take times (generate)))
-          (map #(inc (mod % sides))))))
+(defmethod roll :uniform [{:keys [sides times]}]
+  (let [iter! (get @uniform-iters sides)]
+    (if iter!
+      (iter! times)
+      (let [iters (swap! uniform-iters
+                         assoc sides (stateful-seq (uniform-random sides)))
+            new-iter! (get iters sides)]
+        (new-iter! times)))))

@@ -1,15 +1,7 @@
 (ns winkler-demo.views
-  (:require [winkler-demo.dice :refer [Pseudo Uniform WinklerCrypto] :as dice]
+  (:require [winkler-demo.dice :as dice]
             [winkler-demo.state :as state]
-            [clojure.string :refer [capitalize]]
-            [reagent.core :as r]))
-
-(defn init-randomizer [opts]
-  (let [{:keys [randomizer sides times]} opts
-        randomizers {:winkler (WinklerCrypto. sides times)
-                     :pseudo (Pseudo. sides times)
-                     :uniform (Uniform. sides times)}]
-       (get randomizers randomizer)))
+            [clojure.string :refer [capitalize]]))
 
 (defn roll-display [rolls modifier]
   (if-let [rolls* (seq (interpose "+" rolls))]
@@ -82,7 +74,7 @@
      [:div.field
       [:div.control
        [:button.button.is-link
-        {:on-click #(reset! state/roll (dice/roll (init-randomizer @state/opts)))}
+        {:on-click #(reset! state/roll (dice/roll @state/opts))}
         "Roll"]]]]]])
 
 (defn randomizer-desc []

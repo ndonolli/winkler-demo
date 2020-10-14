@@ -19,8 +19,7 @@
 (defn roll-display-list [rolls]
   [:section.section.roll-container
    (for [roll rolls]
-     (do (tap> roll)
-         [roll-display (:roll roll) (:modifier roll)]))
+     [roll-display (:roll roll) (:modifier roll)])
    [:div.fade]])
 
 (defn header []

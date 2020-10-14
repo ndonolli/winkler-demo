@@ -3,20 +3,25 @@
             [winkler-demo.state :as state]
             [clojure.string :refer [capitalize]]))
 
-(defn roll-display [rolls modifier]
-  (if-let [rolls* (seq (interpose "+" rolls))]
-    [:section.section
+(defn roll-display [dice modifier]
+  (if-let [dice* (seq (interpose "+" dice))]
      [:div.container.dice-container
-      (for [roll rolls*]
-        ^{:key (str "roll-" (js/Math.random))}
-        [:div.ml-1.mr-1.mb-5 {:class (if (= roll "+")
+      (for [die dice*]
+        ^{:key (str "die-" (js/Math.random))}
+        [:div.ml-1.mr-1.mb-5 {:class (if (= die "+")
                                   "plus"
-                                  (str "die" " " (case roll 20 "nat-20" 1 "nat-1" "")))}
-         [:span.die-body.bg-number roll]])
+                                  (str "die" " " (case die 20 "nat-20" 1 "nat-1" "")))}
+         [:span.die-body.bg-number die]])
       (if-not (zero? (int modifier))
         [:span.ml-1.mr-1.mb-5.bg-number (str "+ " modifier)])
-      [:span.ml-1.mr-1.mb-5.bg-number " = " [:strong (reduce + modifier rolls)]]]]))
+      [:span.ml-1.mr-1.mb-5.bg-number " = " [:strong (reduce + modifier dice)]]]))
 
+(defn roll-display-list [rolls]
+  [:section.section.roll-container
+   (for [roll rolls]
+     (do (tap> roll)
+         [roll-display (:roll roll) (:modifier roll)]))
+   [:div.fade]])
 
 (defn header []
   [:section.hero.is-dark
@@ -74,7 +79,7 @@
      [:div.field
       [:div.control
        [:button.button.is-link
-        {:on-click #(reset! state/roll (dice/roll @state/opts))}
+        {:on-click #(swap! state/rolls conj (merge {:roll (dice/roll @state/opts)} @state/opts))}
         "Roll"]]]]]])
 
 (defn randomizer-desc []
@@ -121,5 +126,5 @@
        [roll-form]]
       [:div.column
        [randomizer-desc]]]]]
-   [roll-display @state/roll (:modifier @state/opts)]
+   [roll-display-list @state/rolls]
    [about]])

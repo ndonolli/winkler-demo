@@ -1,7 +1,7 @@
 (ns winkler-demo.state
   (:require [reagent.core :as r]))
 
-(def roll
+(def rolls
   "Sequence of dice rolls"
   (r/atom nil))
 

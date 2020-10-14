@@ -11,4 +11,5 @@
                 :modules {:main {:entries [winkler-demo.core]}}
                 :devtools {:http-root "public"
                            :repl-init-ns winkler-demo.core
-                           :http-port 3000}}}}
+                           :http-port 3000
+                           :preloads [shadow.remote.runtime.cljs.browser]}}}}

@@ -19,8 +19,7 @@
 (defn roll-display-list [rolls]
   [:section.section.roll-container
    (for [roll rolls]
-     [roll-display (:roll roll) (:modifier roll)])
-   [:div.fade]])
+     [roll-display (:roll roll) (:modifier roll)])])
 
 (defn header []
   [:section.hero.is-dark
@@ -125,5 +124,5 @@
        [roll-form]]
       [:div.column
        [randomizer-desc]]]]]
-   [roll-display-list @state/rolls]
+   [roll-display-list (take 5 @state/rolls)]
    [about]])

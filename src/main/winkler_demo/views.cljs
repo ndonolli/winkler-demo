@@ -7,7 +7,8 @@
 (defn save-roll-handler []
   (let [name (js/prompt "Enter name")
         saved-roll (assoc (select-keys @state/opts [:sides :modifier :times]) :name name)]
-    (swap! state/saved-rolls conj saved-roll)))
+    (when (seq name)
+      (swap! state/saved-rolls conj saved-roll))))
 
 (defn commit-roll
   ([]
@@ -98,7 +99,12 @@
    [:h4.label "Saved Rolls"]
    [:div.is-flex
     (for [item @state/saved-rolls]
-      [:button.button.mr-4 {:on-click #(commit-roll item)} (:name item)])]])
+      [:button.button.mr-4 {:on-click #(commit-roll item)} (:name item)])]
+   [:div.mt-2
+    [:a.mt-2.is-size-7 {:on-click #(let [confirmed (js/confirm "This will remove all of your saved rolls.  Continue?")]
+                                     (when confirmed
+                                       (reset! state/saved-rolls #{})))}
+     "Clear saved rolls"]]])
 
 (defn randomizer-desc []
   (let [randomizer (:randomizer @state/opts)]

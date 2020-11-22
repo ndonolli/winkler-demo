@@ -143,7 +143,8 @@
      [:div.columns
       [:div.column
        [roll-form]
-       [saved-rolls]]
+       (if (seq @state/saved-rolls)
+         [saved-rolls])]
       [:div.column
        [randomizer-desc]]]]]
    [roll-display-list (take 5 @state/rolls)]

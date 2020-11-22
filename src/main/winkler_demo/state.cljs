@@ -1,5 +1,8 @@
 (ns winkler-demo.state
-  (:require [reagent.core :as r]))
+  (:require [reagent.core :as r]
+            [winkler-demo.storage :as store]))
+
+(defonce STORAGE_KEY "winkler.saved-rolls")
 
 (def rolls
   "Sequence of dice rolls"
@@ -13,3 +16,9 @@
            :times 1}))
 
 (def collapsed (r/atom false))
+
+(def saved-rolls (r/atom (set (store/get STORAGE_KEY))))
+
+(add-watch saved-rolls :save-db
+  (fn [key this old-state new-state]
+    (store/set! STORAGE_KEY @this)))

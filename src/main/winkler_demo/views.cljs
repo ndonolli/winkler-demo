@@ -1,7 +1,19 @@
 (ns winkler-demo.views
   (:require [winkler-demo.dice :as dice]
             [winkler-demo.state :as state]
-            [clojure.string :refer [capitalize]]))
+            [clojure.string :refer [capitalize]]
+            [reagent.core :as r]))
+
+(defn save-roll-handler []
+  (let [name (js/prompt "Enter name")
+        saved-roll (assoc (select-keys @state/opts [:sides :modifier :times]) :name name)]
+    (swap! state/saved-rolls conj saved-roll)))
+
+(defn commit-roll
+  ([]
+   (swap! state/rolls conj (merge {:roll (dice/roll @state/opts)} @state/opts)))
+  ([saved-roll]
+   (swap! state/rolls conj (merge {:roll (dice/roll (assoc saved-roll :randomizer (:randomizer @state/opts)))} @state/opts))))
 
 (defn roll-display [dice modifier]
   (if-let [dice* (seq (interpose "+" dice))]
@@ -75,10 +87,18 @@
     [:div.field-label]
     [:div.field-body
      [:div.field
-      [:div.control
-       [:button.button.is-link
-        {:on-click #(swap! state/rolls conj (merge {:roll (dice/roll @state/opts)} @state/opts))}
-        "Roll"]]]]]])
+      [:div.control.is-flex
+       [:button.button.is-link.mr-4
+        {:on-click #(commit-roll)}
+        "Roll"]
+       [:button.button {:on-click save-roll-handler} "Save Roll"]]]]]])
+
+(defn saved-rolls []
+  [:div.container.mt-4
+   [:h4.label "Saved Rolls"]
+   [:div.is-flex
+    (for [item @state/saved-rolls]
+      [:button.button.mr-4 {:on-click #(commit-roll item)} (:name item)])]])
 
 (defn randomizer-desc []
   (let [randomizer (:randomizer @state/opts)]
@@ -114,6 +134,7 @@
       "Sure, maybe a demonstration with dice is overkill, but would you trust your character's fate to anything less than the power of chaotic indifference that is a truly random dice roll?  I think not."]
      [:p.is-size-7 "View this page's source on "[:a {:href "https://github.com/ndonolli/winkler-demo"} "github"]". Made with <3 by " [:a {:href "https://imaginathan.space"} "Nathan"]]]]])
 
+
 (defn app []
   [:<>
    [header]
@@ -121,7 +142,8 @@
     [:section.section
      [:div.columns
       [:div.column
-       [roll-form]]
+       [roll-form]
+       [saved-rolls]]
       [:div.column
        [randomizer-desc]]]]]
    [roll-display-list (take 5 @state/rolls)]

@@ -1,14 +1,19 @@
 (ns winkler-demo.views
   (:require [winkler-demo.dice :as dice]
             [winkler-demo.state :as state]
+            [winkler-demo.util :as util]
             [clojure.string :refer [capitalize]]
             [reagent.core :as r]))
 
 (defn save-roll-handler []
   (let [name (js/prompt "Enter name")
+        existing-names (set (map :name @state/saved-rolls))
         saved-roll (assoc (select-keys @state/opts [:sides :modifier :times]) :name name)]
     (when (seq name)
-      (swap! state/saved-rolls conj saved-roll))))
+      (if (contains? existing-names name)
+        (let [confirmed (js/confirm (str "The saved roll \"" name "\" already exists.  Would you like to overwrite it?"))]
+          (when confirmed (swap! state/saved-rolls util/update-in-set :name name saved-roll)))
+        (swap! state/saved-rolls conj saved-roll)))))
 
 (defn commit-roll
   ([]

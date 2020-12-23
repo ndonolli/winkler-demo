@@ -37,10 +37,16 @@
         [:span.ml-1.mr-1.mb-5.bg-number (str "+ " modifier)])
       [:span.ml-1.mr-1.mb-5.bg-number " = " [:strong (reduce + modifier roll)]]]]))
 
+(defn show-more []
+  [:a.mt-2.is-size-7 {:on-click #(swap! state/view-limit + 5)} "Show more"])
+
 (defn roll-display-list [rolls]
   [:section.section.roll-container
    (for [roll rolls]
-     [roll-display roll])])
+     [roll-display roll])
+   [:div.container
+    (when (> (count @state/rolls) @state/view-limit)
+      [show-more])]])
 
 (defn header []
   [:section.hero.is-dark
@@ -135,6 +141,7 @@
        [:a.mt-2 {:on-click #(swap! state/collapsed not)} "Tell me more!"])
      ]))
 
+
 (defn about []
   [:section.hero.is-dark
    [:div.hero-body
@@ -161,5 +168,5 @@
          [saved-rolls])]
       [:div.column
        [randomizer-desc]]]]]
-   [roll-display-list (take 5 @state/rolls)]
+   [roll-display-list (take @state/view-limit @state/rolls)]
    [about]])

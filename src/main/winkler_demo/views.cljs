@@ -14,25 +14,28 @@
   ([]
    (swap! state/rolls conj (merge {:roll (dice/roll @state/opts)} @state/opts)))
   ([saved-roll]
-   (swap! state/rolls conj (merge {:roll (dice/roll (assoc saved-roll :randomizer (:randomizer @state/opts)))} @state/opts))))
+   (swap! state/rolls conj (merge {:roll (dice/roll (assoc saved-roll :randomizer (:randomizer @state/opts)))} saved-roll))))
 
-(defn roll-display [dice modifier]
-  (if-let [dice* (seq (interpose "+" dice))]
+(defn roll-display [{:keys [roll modifier times sides name]}]
+  (if-let [dice* (seq (interpose "+" roll))]
+    [:div
+     [:div.container
+      (str times "d" sides (when-not (zero? modifier) (str "+" modifier)) " " (when name (str "(" name ")")))]
      [:div.container.dice-container
       (for [die dice*]
         ^{:key (str "die-" (js/Math.random))}
         [:div.ml-1.mr-1.mb-5 {:class (if (= die "+")
-                                  "plus"
-                                  (str "die" " " (case die 20 "nat-20" 1 "nat-1" "")))}
+                                       "plus"
+                                       (str "die" " " (case die 20 "nat-20" 1 "nat-1" "")))}
          [:span.die-body.bg-number die]])
       (if-not (zero? (int modifier))
         [:span.ml-1.mr-1.mb-5.bg-number (str "+ " modifier)])
-      [:span.ml-1.mr-1.mb-5.bg-number " = " [:strong (reduce + modifier dice)]]]))
+      [:span.ml-1.mr-1.mb-5.bg-number " = " [:strong (reduce + modifier roll)]]]]))
 
 (defn roll-display-list [rolls]
   [:section.section.roll-container
    (for [roll rolls]
-     [roll-display (:roll roll) (:modifier roll)])])
+     [roll-display roll])])
 
 (defn header []
   [:section.hero.is-dark
@@ -149,7 +152,7 @@
      [:div.columns
       [:div.column
        [roll-form]
-       (if (seq @state/saved-rolls)
+       (when (seq @state/saved-rolls)
          [saved-rolls])]
       [:div.column
        [randomizer-desc]]]]]

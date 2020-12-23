@@ -20,5 +20,10 @@
 (def saved-rolls (r/atom (set (store/get STORAGE_KEY))))
 
 (add-watch saved-rolls :save-db
-  (fn [key this old-state new-state]
-    (store/set! STORAGE_KEY @this)))
+           (fn [key this old-state new-state]
+             (tap> @this)
+             (store/set! STORAGE_KEY @this)))
+
+(add-watch rolls :new-roll
+           (fn [key this old-state new-state]
+             (tap> @this)))
